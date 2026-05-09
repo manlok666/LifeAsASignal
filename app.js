@@ -9,6 +9,34 @@
   const DAY_MS = HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MS_PER_SECOND;
   const ACTION_KIND = { C: "Consume", E: "Event", R: "Create" };
   const MIN_TRACE_POINTS = 2;
+  const CONSUME_MODEL = {
+    varianceMin: 3.5,
+    varianceFactor: 0.82,
+    periodicityMax: 0.11,
+    periodicityDelta: 0.008,
+    trendSlopeFactor: 0.9,
+    breakOffsetFactor: 0.7,
+  };
+  const EVENT_MODEL = {
+    varianceMax: 26,
+    varianceFactor: 1.35,
+    varianceLift: 2.5,
+    periodicityMin: 0.02,
+    periodicityFactor: 0.83,
+    breakOffsetRange: 22,
+    shockCount: 5,
+    shockRange: 45,
+  };
+  const CREATE_MODEL = {
+    trendShiftRange: 0.08,
+    trendSlopeMin: -0.2,
+    trendSlopeMax: 0.2,
+    trendOffsetRange: 8,
+    varianceFactor: 0.94,
+    varianceLift: 1.6,
+    periodicityFactor: 0.92,
+    periodicityLift: 0.003,
+  };
 
   const canvas = document.getElementById("signalCanvas");
   const ctx = canvas.getContext("2d");
@@ -86,29 +114,39 @@
   }
 
   function applyConsume() {
-    state.variance = Math.max(3.5, state.variance * 0.82);
-    state.periodicity = Math.min(0.11, state.periodicity + 0.008);
-    state.trendSlope *= 0.9;
-    state.breakOffset *= 0.7;
+    state.variance = Math.max(CONSUME_MODEL.varianceMin, state.variance * CONSUME_MODEL.varianceFactor);
+    state.periodicity = Math.min(
+      CONSUME_MODEL.periodicityMax,
+      state.periodicity + CONSUME_MODEL.periodicityDelta
+    );
+    state.trendSlope *= CONSUME_MODEL.trendSlopeFactor;
+    state.breakOffset *= CONSUME_MODEL.breakOffsetFactor;
     pulse();
   }
 
   function applyEvent() {
-    state.variance = Math.min(26, state.variance * 1.35 + 2.5);
-    state.periodicity = Math.max(0.02, state.periodicity * 0.83);
-    state.breakOffset += (Math.random() - 0.5) * 22;
-    for (let i = 0; i < 5; i += 1) {
-      state.shockQueue.push((Math.random() - 0.5) * 45);
+    state.variance = Math.min(
+      EVENT_MODEL.varianceMax,
+      state.variance * EVENT_MODEL.varianceFactor + EVENT_MODEL.varianceLift
+    );
+    state.periodicity = Math.max(EVENT_MODEL.periodicityMin, state.periodicity * EVENT_MODEL.periodicityFactor);
+    state.breakOffset += (Math.random() - 0.5) * EVENT_MODEL.breakOffsetRange;
+    for (let i = 0; i < EVENT_MODEL.shockCount; i += 1) {
+      state.shockQueue.push((Math.random() - 0.5) * EVENT_MODEL.shockRange);
     }
     pulse();
   }
 
   function applyCreate() {
-    const shift = (Math.random() - 0.5) * 0.08;
-    state.trendSlope = clamp(state.trendSlope + shift, -0.2, 0.2);
-    state.trend += (Math.random() - 0.5) * 8;
-    state.variance = state.variance * 0.94 + 1.6;
-    state.periodicity = state.periodicity * 0.92 + 0.003;
+    const shift = (Math.random() - 0.5) * CREATE_MODEL.trendShiftRange;
+    state.trendSlope = clamp(
+      state.trendSlope + shift,
+      CREATE_MODEL.trendSlopeMin,
+      CREATE_MODEL.trendSlopeMax
+    );
+    state.trend += (Math.random() - 0.5) * CREATE_MODEL.trendOffsetRange;
+    state.variance = state.variance * CREATE_MODEL.varianceFactor + CREATE_MODEL.varianceLift;
+    state.periodicity = state.periodicity * CREATE_MODEL.periodicityFactor + CREATE_MODEL.periodicityLift;
     pulse();
   }
 
