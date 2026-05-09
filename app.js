@@ -3,6 +3,7 @@
   const HINT_KEY = "life-as-signal-hint-seen-v1";
   const DAY_INPUT_KEY_PREFIX = "life-as-signal-input-";
   const DAY_MS = 24 * 60 * 60 * 1000;
+  const ACTION_KIND = { C: "Consume", E: "Event", R: "Create" };
 
   const canvas = document.getElementById("signalCanvas");
   const ctx = canvas.getContext("2d");
@@ -40,7 +41,9 @@
       if (!raw) return [];
       const parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) return [];
-      return parsed.filter((item) => item && typeof item.t === "number" && typeof item.a === "string");
+      return parsed.filter(
+        (item) => item && typeof item.t === "number" && typeof item.a === "string"
+      );
     } catch {
       return [];
     }
@@ -114,11 +117,11 @@
     buttons.R.addEventListener("click", () => inputAction("R", applyCreate));
   }
 
-  function inputAction(action, applyFn) {
+  function inputAction(actionCode, applyFn) {
     if (!canInputToday()) return;
     applyFn();
-    lockTodayInput(action);
-    state.history.push({ t: Date.now(), a: action });
+    lockTodayInput(actionCode);
+    state.history.push({ t: Date.now(), a: actionCode, k: ACTION_KIND[actionCode] });
     saveHistory(state.history);
     updateButtonState();
   }

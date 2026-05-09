@@ -9,6 +9,6 @@
 如需本地静态服务：
 
 ```bash
-cd <你的项目目录>/LifeAsASignal
+cd <project-path>/LifeAsASignal
 python3 -m http.server 8080
 ```
