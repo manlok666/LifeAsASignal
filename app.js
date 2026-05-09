@@ -26,6 +26,7 @@
     periodicity: 0.04,
     shockQueue: [],
     breakOffset: 0,
+    pulseTimer: null,
     history: loadHistory(),
   };
 
@@ -65,9 +66,14 @@
   }
 
   function pulse() {
+    if (state.pulseTimer) {
+      clearTimeout(state.pulseTimer);
+      state.pulseTimer = null;
+    }
     state.variance *= 1.03;
-    setTimeout(() => {
+    state.pulseTimer = setTimeout(() => {
       state.variance *= 0.97;
+      state.pulseTimer = null;
     }, 400);
   }
 

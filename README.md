@@ -4,11 +4,11 @@
 
 ## 运行
 
-直接打开 `/home/runner/work/LifeAsASignal/LifeAsASignal/index.html` 即可。
+直接打开项目根目录下的 `index.html` 即可。
 
 如需本地静态服务：
 
 ```bash
-cd /home/runner/work/LifeAsASignal/LifeAsASignal
+cd <你的项目目录>/LifeAsASignal
 python3 -m http.server 8080
 ```
