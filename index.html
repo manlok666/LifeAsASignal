@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Life as a Signal</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="instrument">
+      <canvas id="signalCanvas" aria-label="life signal"></canvas>
+
+      <section id="hint" class="hint hidden" aria-live="polite">
+        <p>每日一次：选择 C / E / R</p>
+      </section>
+
+      <nav class="controls" aria-label="daily input">
+        <button id="btnC" type="button">C</button>
+        <button id="btnE" type="button">E</button>
+        <button id="btnR" type="button">R</button>
+      </nav>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
