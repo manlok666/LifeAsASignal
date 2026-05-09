@@ -2,8 +2,13 @@
   const STORAGE_KEY = "life-as-signal-history-v1";
   const HINT_KEY = "life-as-signal-hint-seen-v1";
   const DAY_INPUT_KEY_PREFIX = "life-as-signal-input-";
-  const DAY_MS = 24 * 60 * 60 * 1000;
+  const HOURS_PER_DAY = 24;
+  const MINUTES_PER_HOUR = 60;
+  const SECONDS_PER_MINUTE = 60;
+  const MS_PER_SECOND = 1000;
+  const DAY_MS = HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MS_PER_SECOND;
   const ACTION_KIND = { C: "Consume", E: "Event", R: "Create" };
+  const MIN_TRACE_POINTS = 2;
 
   const canvas = document.getElementById("signalCanvas");
   const ctx = canvas.getContext("2d");
@@ -140,7 +145,9 @@
   }
 
   function bootstrapPoints() {
-    state.points = new Array(Math.max(2, Math.floor(state.width))).fill(state.centerY);
+    state.points = new Array(Math.max(MIN_TRACE_POINTS, Math.floor(state.width))).fill(
+      state.centerY
+    );
     state.pointer = 0;
   }
 
@@ -256,9 +263,7 @@
       setTimeout(() => {
         hint.classList.add("hidden");
       }, 2800);
-      return;
     }
-    hint.classList.add("hidden");
   }
 
   function init() {
